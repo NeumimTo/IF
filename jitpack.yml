@@ -1,0 +1,5 @@
+jdk:
+  - openjdk9
+install:
+  - wget
+  - mvn install:install-file -Dfile="https://github.com/NeumimTo/IF/releases/download/follia1/IF-0.10.11.jar" -DgroupId=com.if -DartifactId=if -Dversion=1 -Dpackaging=jar -DgeneratePom=true
