@@ -2,6 +2,8 @@ package com.github.stefvanschie.inventoryframework.gui;
 
 import com.github.stefvanschie.inventoryframework.gui.type.*;
 import com.github.stefvanschie.inventoryframework.gui.type.util.Gui;
+import com.github.stefvanschie.inventoryframework.util.DispatchUtil;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -82,7 +84,7 @@ public class GuiListener implements Listener {
         gui.click(event);
 
         if (event.isCancelled()) {
-            Bukkit.getScheduler().runTask(this.plugin, () -> {
+            DispatchUtil.runTaskFor(event.getWhoClicked(), this.plugin, () -> {
                 PlayerInventory playerInventory = event.getWhoClicked().getInventory();
 
                 /* due to a client issue off-hand items appear as ghost items, this updates the off-hand correctly
@@ -352,7 +354,7 @@ public class GuiListener implements Listener {
         playerInventory.setItemInOffHand(playerInventory.getItemInOffHand());
 
         if (!gui.isUpdating()) {//this is a hack to remove items correctly when players press the x button in a beacon
-            Bukkit.getScheduler().runTask(this.plugin, () -> {
+            DispatchUtil.runTaskFor(humanEntity, this.plugin, () -> {
                 gui.callOnClose(event);
 
                 if (humanEntity.getOpenInventory().getTopInventory() instanceof PlayerInventory) {
@@ -364,17 +366,22 @@ public class GuiListener implements Listener {
 
             gui.getHumanEntityCache().restoreAndForget(humanEntity);
 
-            if (gui.getViewerCount() == 1) {
-                activeGuiInstances.remove(gui);
-            }
+            //delay because merchants put items in slots back in the player inventory
+            DispatchUtil.runTaskFor(humanEntity, this.plugin, ()-> {
+                gui.getHumanEntityCache().restoreAndForget(humanEntity);
 
-            if (gui instanceof AnvilGui) {
-                ((AnvilGui) gui).handleClose(humanEntity);
-            } else if (gui instanceof MerchantGui) {
-                ((MerchantGui) gui).handleClose(humanEntity);
-            } else if (gui instanceof ModernSmithingTableGui) {
-                ((ModernSmithingTableGui) gui).handleClose(humanEntity);
-            }
+                if (gui.getViewerCount() == 1) {
+                    activeGuiInstances.remove(gui);
+                }
+
+                if (gui instanceof AnvilGui) {
+                    ((AnvilGui) gui).handleClose(humanEntity);
+                } else if (gui instanceof MerchantGui) {
+                    ((MerchantGui) gui).handleClose(humanEntity);
+                } else if (gui instanceof ModernSmithingTableGui) {
+                    ((ModernSmithingTableGui) gui).handleClose(humanEntity);
+                }
+            });
         }
     }
 
