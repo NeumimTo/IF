@@ -5,11 +5,7 @@ name: Java CI with Maven
 
 on:
   push:
-    branches: [ '*' ]
-  pull_request:
-    branches: [ '*' ]
-  workflow_dispatch:
-    branches: [ '*' ]
+    branches: [ 'master' ]
 
 jobs:
   build:
@@ -80,3 +76,8 @@ jobs:
         mvn paper-nms:init -pl nms/1_20
     - name: Build with Maven
       run: mvn -B package --file pom.xml
+    - run: mkdir staging && cp /home/runner/work/IF/IF/IF/target/IF-0.10.11-shaded.jar staging
+    - uses: actions/upload-artifact@v3
+      with:
+        name: Package
+        path: staging
