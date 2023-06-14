@@ -1,0 +1,15 @@
+jdk:
+  - openjdk11
+install:
+  - mvn paper-nms:init -pl nms/1_17_0
+  - mvn paper-nms:init -pl nms/1_17_1
+  - mvn paper-nms:init -pl nms/1_18_0
+  - mvn paper-nms:init -pl nms/1_18_1
+  - mvn paper-nms:init -pl nms/1_18_2
+  - mvn paper-nms:init -pl nms/1_19_0
+  - mvn paper-nms:init -pl nms/1_19_1
+  - mvn paper-nms:init -pl nms/1_19_2
+  - mvn paper-nms:init -pl nms/1_19_3
+  - mvn paper-nms:init -pl nms/1_19_4
+  - mvn paper-nms:init -pl nms/1_20
+  - mvn -pl -nms/1_14,-nms/1_15,-nms/1_16_1,-nms/1_16_2-3,-nms/1_16_4-5 install -DskipTests
